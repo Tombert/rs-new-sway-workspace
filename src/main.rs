@@ -1,14 +1,27 @@
 use std::process::Command;
 use serde_json::{Result, Value};
 use std::collections::HashSet;
-fn main() -> Result<()> {
+
+fn get_workspace_json() -> String {
     let output = 
         Command::new("swaymsg")
         .arg("-t")
         .arg("get_workspaces")
         .output()
         .expect("failed to execute process");
-    let v: Value = serde_json::from_str(String::from_utf8_lossy(&output.stdout).as_ref())?;
+    return String::from_utf8_lossy(&output.stdout).as_ref().to_string();
+}
+
+fn get_value(x : String) -> Result<Value> {
+
+    let v: Value = serde_json::from_str(x.as_ref())?;
+    return Ok(v); 
+}
+
+fn main() -> Result<()> {
+    let output = get_workspace_json();
+    let v : Value = get_value(output)?;
+
 
     if let Value::Array(arr) = v {
         let b: HashSet<i64>= 
