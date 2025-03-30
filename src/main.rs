@@ -1,15 +1,16 @@
-use std::process::Command;
+use tokio::process::Command;
 use serde_json::{Result, Value};
 use std::collections::HashSet;
+use std::result::Result as StdResult;
+use std::error::Error;
 
-fn get_workspace_json() -> String {
-    let output = 
-        Command::new("swaymsg")
+async fn get_workspace_json() -> StdResult<String, Box<dyn Error>> {
+    let output = Command::new("swaymsg")
         .arg("-t")
         .arg("get_workspaces")
         .output()
-        .expect("failed to execute process");
-    return String::from_utf8_lossy(&output.stdout).as_ref().to_string();
+        .await?;
+    return Ok(String::from_utf8_lossy(&output.stdout).as_ref().to_string());
 }
 
 fn get_value(x : String) -> Result<Value> {
@@ -18,8 +19,9 @@ fn get_value(x : String) -> Result<Value> {
     return Ok(v); 
 }
 
-fn main() -> Result<()> {
-    let output = get_workspace_json();
+#[tokio::main]
+async fn main() -> StdResult<(),  Box<dyn Error>> {
+    let output = get_workspace_json().await?;
     let v : Value = get_value(output)?;
 
 
@@ -34,8 +36,7 @@ fn main() -> Result<()> {
                 Command::new("swaymsg")
                     .arg("workspace")
                     .arg(i.to_string())
-                    .output()
-                    .expect("failed to execute process");
+                    .output() .await?;
                 break;
             }
         }
