@@ -34,7 +34,6 @@ async fn main() -> StdResult<(),  Box<dyn Error>> {
     let output = get_workspace_json().await?;
     let v : Value = get_value(output)?;
 
-
     if let Value::Array(arr) = v {
         let b: HashSet<i64>= 
             arr
