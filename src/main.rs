@@ -19,6 +19,16 @@ fn get_value(x : String) -> Result<Value> {
     return Ok(v); 
 }
 
+async fn create_workspace(work_num : i64) -> StdResult<(), Box<dyn Error>> {
+    Command::new("swaymsg")
+        .arg("workspace")
+        .arg(work_num.to_string())
+        .output() .await?;
+    Ok(())
+}
+
+
+
 #[tokio::main]
 async fn main() -> StdResult<(),  Box<dyn Error>> {
     let output = get_workspace_json().await?;
@@ -33,10 +43,7 @@ async fn main() -> StdResult<(),  Box<dyn Error>> {
             .collect();
         for i in 1..20 {
             if !b.contains(&i) {
-                Command::new("swaymsg")
-                    .arg("workspace")
-                    .arg(i.to_string())
-                    .output() .await?;
+                create_workspace(i).await;
                 break;
             }
         }
