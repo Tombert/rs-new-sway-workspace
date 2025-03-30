@@ -28,11 +28,6 @@
             pkg-config
           ];
 
-          buildInputs = with pkgs; [
-            wayland
-            wayland-protocols
-            libxkbcommon
-          ];
         };
 
         devShells.default = pkgs.mkShell {
@@ -40,9 +35,6 @@
             rust
 	    pkgs.cargo
             pkgs.pkg-config
-            pkgs.wayland
-            pkgs.wayland-protocols
-            pkgs.libxkbcommon
           ];
         };
       });
